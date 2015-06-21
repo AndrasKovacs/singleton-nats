@@ -8,7 +8,6 @@ module Data.Nat (
   , natPlus
   , natMul
   , SNat
-  , Data.Singletons.Prelude.Sing(..)
   , (:*)
   , (:*$)
   , (:*$$)
