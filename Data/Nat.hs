@@ -47,6 +47,15 @@ natPlus = (Data.Nat.+)
 natMul :: Nat -> Nat -> Nat
 natMul = (Data.Nat.*)
 
+{-| Converts a runtime 'Integer' to an existentially wrapped 'Nat'. Returns 'Nothing' if
+the argument is negative -}
+someNat :: Integer -> Maybe (SomeSing (KindOf Z))
+someNat n | n < 0 = Nothing
+someNat n = Just (go n) where  
+  go 0 = SomeSing SZ
+  go n = case go (n - 1) of
+    SomeSing sn -> SomeSing (SS sn)
+
 {-| Provides a shorthand for 'Nat'-s using "GHC.TypeLits", for example:
 
 >>> :kind! Lit 3
