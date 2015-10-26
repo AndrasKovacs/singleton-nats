@@ -1,6 +1,6 @@
 
 name:                singleton-nats
-version:             0.3.1.0
+version:             0.4.0.0
 synopsis:            Unary natural numbers relying on the singletons infrastructure.         
 license:             BSD3
 license-file:        LICENSE
@@ -18,6 +18,6 @@ library
 
   build-depends:       
     base >=4.7 && <4.9,
-    singletons >= 1
+    singletons >= 2.0.1
 
   default-language:    Haskell2010
