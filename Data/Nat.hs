@@ -1,7 +1,8 @@
 {-# LANGUAGE
   UndecidableInstances, ScopedTypeVariables, DataKinds,
   FlexibleInstances, GADTs, TypeFamilies, TemplateHaskell,
-  InstanceSigs, TypeOperators, PolyKinds #-}
+  InstanceSigs, TypeOperators, PolyKinds, StandaloneDeriving,
+  FlexibleContexts, AllowAmbiguousTypes #-}
 
 module Data.Nat (
     Nat(..)
@@ -16,17 +17,18 @@ module Data.Nat (
   , SNat
   , Data.Singletons.Prelude.Sing(SS, SZ)
   , Data.Singletons.Prelude.PNum
-  , Data.Singletons.Prelude.SNum    
+  , Data.Singletons.Prelude.SNum
   , SSym0(..)
   , SSym1(..)
   , ZSym0(..)
   , Lit
-  , SLit ) where
+  , SLit
+  , sLit) where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 import Unsafe.Coerce
-import qualified GHC.TypeLits as Lit  
+import qualified GHC.TypeLits as Lit
 
 $(singletons [d|
   data Nat = Z | S Nat deriving (Eq, Show, Ord)
@@ -46,9 +48,17 @@ $(singletons [d|
 
   natAbs :: Nat -> Nat
   natAbs n = n
-  |])                                
+  |])
 
-instance PNum ('KProxy :: KProxy Nat) where
+deriving instance Show (SNat n)
+
+instance Eq (SNat n) where
+  (==) _ _ = True
+
+instance Ord (SNat n) where
+  compare _ _ = EQ
+
+instance PNum ('Proxy :: Proxy Nat) where
   type a :+ b = NatPlus a b
   type a :- b = NatMinus a b
   type a :* b = NatMul a b
@@ -56,20 +66,20 @@ instance PNum ('KProxy :: KProxy Nat) where
   type Signum (a :: Nat) = Error "Data.Nat: signum not implemented"
   type FromInteger (a :: Lit.Nat) = Lit a
 
-instance SNum ('KProxy :: KProxy Nat) where  
+instance SNum Nat where
   (%:+) = sNatPlus
   (%:*) = sNatMul
   (%:-) = sNatMinus
-  sAbs  = sNatAbs  
+  sAbs  = sNatAbs
   sSignum = case toSing "Data.Nat: signum not implemented" of
-    SomeSing s -> sError s    
+    SomeSing s -> sError s
   sFromInteger n = case n %:== (sing :: Sing 0) of
     STrue  -> unsafeCoerce SZ
     SFalse -> unsafeCoerce (SS (sFromInteger (n %:- (sing :: Sing 1))))
 
 {-| Converts a runtime 'Integer' to an existentially wrapped 'Nat'. Returns 'Nothing' if
 the argument is negative -}
-someNatVal :: Integer -> Maybe (SomeSing (KindOf Z))
+someNatVal :: Integer -> Maybe (SomeSing Nat)
 someNatVal n = case Lit.someNatVal n of
   Just (Lit.SomeNat (pn :: Proxy n)) -> Just (SomeSing (sFromInteger (sing :: Sing n)))
   Nothing -> Nothing
@@ -87,3 +97,13 @@ type family Lit n where
 
 type SLit n = Sing (Lit n)
 
+{-| Shorthand for 'SNat' literals using `TypeApplications`.
+
+>>> :set -XTypeApplications
+>>> sLit @5
+SS (SS (SS (SS (SS SZ))))
+
+-}
+
+sLit :: forall (n :: Lit.Nat). SingI (Lit n) => Sing (Lit n)
+sLit = sing
