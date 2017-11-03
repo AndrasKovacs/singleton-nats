@@ -2,7 +2,7 @@
   UndecidableInstances, ScopedTypeVariables, DataKinds,
   FlexibleInstances, GADTs, TypeFamilies, TemplateHaskell,
   InstanceSigs, TypeOperators, PolyKinds, StandaloneDeriving,
-  FlexibleContexts, AllowAmbiguousTypes #-}
+  FlexibleContexts, AllowAmbiguousTypes, CPP, OverloadedStrings #-}
 
 module Data.Nat (
     Nat(..)
@@ -58,7 +58,11 @@ instance Eq (SNat n) where
 instance Ord (SNat n) where
   compare _ _ = EQ
 
+#if MIN_VERSION_singletons(2,3,0)
+instance PNum Nat where
+#else
 instance PNum ('Proxy :: Proxy Nat) where
+#endif
   type a :+ b = NatPlus a b
   type a :- b = NatMinus a b
   type a :* b = NatMul a b
