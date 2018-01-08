@@ -2,7 +2,8 @@
   UndecidableInstances, ScopedTypeVariables, DataKinds,
   FlexibleInstances, GADTs, TypeFamilies, TemplateHaskell,
   InstanceSigs, TypeOperators, PolyKinds, StandaloneDeriving,
-  FlexibleContexts, AllowAmbiguousTypes, CPP, OverloadedStrings #-}
+  FlexibleContexts, AllowAmbiguousTypes, CPP, OverloadedStrings,
+  EmptyCase #-}
 
 module Data.Nat (
     Nat(..)
@@ -50,7 +51,9 @@ $(singletons [d|
   natAbs n = n
   |])
 
+#if !(MIN_VERSION_singletons(2,4,0))
 deriving instance Show (SNat n)
+#endif
 
 instance Eq (SNat n) where
   (==) _ _ = True
@@ -63,23 +66,47 @@ instance PNum Nat where
 #else
 instance PNum ('Proxy :: Proxy Nat) where
 #endif
+#if MIN_VERSION_singletons(2,4,0)
+  type a + b = NatPlus a b
+  type a - b = NatMinus a b
+  type a * b = NatMul a b
+#else
   type a :+ b = NatPlus a b
   type a :- b = NatMinus a b
   type a :* b = NatMul a b
+#endif
   type Abs a = NatAbs a
   type Signum (a :: Nat) = Error "Data.Nat: signum not implemented"
   type FromInteger (a :: Lit.Nat) = Lit a
 
 instance SNum Nat where
+#if MIN_VERSION_singletons(2,4,0)
+  (%+) = sNatPlus
+  (%*) = sNatMul
+  (%-) = sNatMinus
+#else
   (%:+) = sNatPlus
   (%:*) = sNatMul
   (%:-) = sNatMinus
+#endif
   sAbs  = sNatAbs
   sSignum = case toSing "Data.Nat: signum not implemented" of
     SomeSing s -> sError s
-  sFromInteger n = case n %:== (sing :: Sing 0) of
+  sFromInteger n = case n 
+#if MIN_VERSION_singletons(2,4,0)
+                          %==
+#else
+                          %:==
+#endif
+                               (sing :: Sing 0) of
     STrue  -> unsafeCoerce SZ
-    SFalse -> unsafeCoerce (SS (sFromInteger (n %:- (sing :: Sing 1))))
+    SFalse -> unsafeCoerce (SS (sFromInteger (n
+#if MIN_VERSION_singletons(2,4,0)
+                                                %-
+#else
+                                                %:-
+#endif
+                                                    (sing :: Sing 1))))
 
 {-| Converts a runtime 'Integer' to an existentially wrapped 'Nat'. Returns 'Nothing' if
 the argument is negative -}
