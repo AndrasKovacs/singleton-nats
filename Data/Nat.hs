@@ -26,6 +26,8 @@ module Data.Nat (
   , SSym1
   , ZSym0
   , Lit
+  , LitSym0(..)
+  , LitSym1
   , SLit
   , sLit) where
 
@@ -140,6 +142,7 @@ Lit 3 :: Nat
 type family Lit n where
   Lit 0 = Z
   Lit n = S (Lit (n Lit.- 1))
+$(genDefunSymbols [''Lit])
 
 type SLit n = Sing (Lit n)
 
