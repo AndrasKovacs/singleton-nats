@@ -15,6 +15,7 @@ module Data.Nat (
   , natMul
   , natMinus
   , natAbs
+  , someNatVal
   , SNat
   , Data.Singletons.Prelude.Sing(SS, SZ)
   , Data.Singletons.Prelude.PNum

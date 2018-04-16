@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Define `someNatVal`.
+
 # 0.4.0.4 [2018.01.09]
 * Allow `singletons-2.4`.
 
