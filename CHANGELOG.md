@@ -1,4 +1,6 @@
 # next [????.??.??]
+* Add a `Num Nat` instance.
+* Implement `signum` in the `PNum`/`SNum` instances for `Nat`.
 * Define `someNatVal`.
 
 # 0.4.0.4 [2018.01.09]

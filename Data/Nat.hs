@@ -11,10 +11,12 @@ module Data.Nat (
   , NatMul
   , NatMinus
   , NatAbs
+  , NatSignum
   , natPlus
   , natMul
   , natMinus
   , natAbs
+  , natSignum
   , someNatVal
   , SNat
   , Data.Singletons.Prelude.Sing(SS, SZ)
@@ -50,6 +52,10 @@ $(singletons [d|
 
   natAbs :: Nat -> Nat
   natAbs n = n
+
+  natSignum :: Nat -> Nat
+  natSignum Z     = Z
+  natSignum (S _) = S Z
   |])
 
 #if !(MIN_VERSION_singletons(2,4,0))
@@ -61,6 +67,15 @@ instance Eq (SNat n) where
 
 instance Ord (SNat n) where
   compare _ _ = EQ
+
+instance Num Nat where
+  (+) = natPlus
+  (-) = natMinus
+  (*) = natMul
+  abs = natAbs
+  signum = natSignum
+  fromInteger 0 = Z
+  fromInteger n = S (fromInteger (n - 1))
 
 #if MIN_VERSION_singletons(2,3,0)
 instance PNum Nat where
@@ -77,7 +92,7 @@ instance PNum ('Proxy :: Proxy Nat) where
   type a :* b = NatMul a b
 #endif
   type Abs a = NatAbs a
-  type Signum (a :: Nat) = Error "Data.Nat: signum not implemented"
+  type Signum a = NatSignum a
   type FromInteger (a :: Lit.Nat) = Lit a
 
 instance SNum Nat where
@@ -90,9 +105,8 @@ instance SNum Nat where
   (%:*) = sNatMul
   (%:-) = sNatMinus
 #endif
-  sAbs  = sNatAbs
-  sSignum = case toSing "Data.Nat: signum not implemented" of
-    SomeSing s -> sError s
+  sAbs    = sNatAbs
+  sSignum = sNatSignum
   sFromInteger n = case n
 #if MIN_VERSION_singletons(2,4,0)
                           %==
