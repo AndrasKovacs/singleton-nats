@@ -20,8 +20,8 @@ module Data.Nat (
   , Data.Singletons.Prelude.PNum
   , Data.Singletons.Prelude.SNum
   , SSym0(..)
-  , SSym1(..)
-  , ZSym0(..)
+  , SSym1
+  , ZSym0
   , Lit
   , SLit
   , sLit) where
@@ -39,11 +39,11 @@ $(singletons [d|
   natPlus (S a) b = S (natPlus a b)
 
   natMul :: Nat -> Nat -> Nat
-  natMul Z     b = Z
+  natMul Z     _ = Z
   natMul (S a) b = natPlus b (natMul a b)
 
   natMinus :: Nat -> Nat -> Nat
-  natMinus Z     b     = Z
+  natMinus Z     _     = Z
   natMinus (S a) (S b) = natMinus a b
   natMinus a     Z     = a
 
@@ -92,7 +92,7 @@ instance SNum Nat where
   sAbs  = sNatAbs
   sSignum = case toSing "Data.Nat: signum not implemented" of
     SomeSing s -> sError s
-  sFromInteger n = case n 
+  sFromInteger n = case n
 #if MIN_VERSION_singletons(2,4,0)
                           %==
 #else
@@ -112,7 +112,7 @@ instance SNum Nat where
 the argument is negative -}
 someNatVal :: Integer -> Maybe (SomeSing Nat)
 someNatVal n = case Lit.someNatVal n of
-  Just (Lit.SomeNat (pn :: Proxy n)) -> Just (SomeSing (sFromInteger (sing :: Sing n)))
+  Just (Lit.SomeNat (_ :: Proxy n)) -> Just (SomeSing (sFromInteger (sing :: Sing n)))
   Nothing -> Nothing
 
 {-| Provides a shorthand for 'Nat'-s using "GHC.TypeLits", for example:
