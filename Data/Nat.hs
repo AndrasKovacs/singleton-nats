@@ -33,7 +33,6 @@ module Data.Nat (
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
-import Unsafe.Coerce
 import qualified GHC.TypeLits as Lit
 
 $(singletons [d|
@@ -58,6 +57,17 @@ $(singletons [d|
   natSignum :: Nat -> Nat
   natSignum Z     = Z
   natSignum (S _) = S Z
+
+  instance Num Nat where
+    (+) = natPlus
+    (-) = natMinus
+    (*) = natMul
+    abs = natAbs
+    signum = natSignum
+    fromInteger n
+      = if n == 0
+           then Z
+           else S (fromInteger (n - 1))
   |])
 
 #if !(MIN_VERSION_singletons(2,4,0))
@@ -69,61 +79,6 @@ instance Eq (SNat n) where
 
 instance Ord (SNat n) where
   compare _ _ = EQ
-
-instance Num Nat where
-  (+) = natPlus
-  (-) = natMinus
-  (*) = natMul
-  abs = natAbs
-  signum = natSignum
-  fromInteger 0 = Z
-  fromInteger n = S (fromInteger (n - 1))
-
-#if MIN_VERSION_singletons(2,3,0)
-instance PNum Nat where
-#else
-instance PNum ('Proxy :: Proxy Nat) where
-#endif
-#if MIN_VERSION_singletons(2,4,0)
-  type a + b = NatPlus a b
-  type a - b = NatMinus a b
-  type a * b = NatMul a b
-#else
-  type a :+ b = NatPlus a b
-  type a :- b = NatMinus a b
-  type a :* b = NatMul a b
-#endif
-  type Abs a = NatAbs a
-  type Signum a = NatSignum a
-  type FromInteger (a :: Lit.Nat) = Lit a
-
-instance SNum Nat where
-#if MIN_VERSION_singletons(2,4,0)
-  (%+) = sNatPlus
-  (%*) = sNatMul
-  (%-) = sNatMinus
-#else
-  (%:+) = sNatPlus
-  (%:*) = sNatMul
-  (%:-) = sNatMinus
-#endif
-  sAbs    = sNatAbs
-  sSignum = sNatSignum
-  sFromInteger n = case n
-#if MIN_VERSION_singletons(2,4,0)
-                          %==
-#else
-                          %:==
-#endif
-                               (sing :: Sing 0) of
-    STrue  -> unsafeCoerce SZ
-    SFalse -> unsafeCoerce (SS (sFromInteger (n
-#if MIN_VERSION_singletons(2,4,0)
-                                                %-
-#else
-                                                %:-
-#endif
-                                                    (sing :: Sing 1))))
 
 {-| Converts a runtime 'Integer' to an existentially wrapped 'Nat'. Returns 'Nothing' if
 the argument is negative -}
