@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Allow `singletons-2.5`.
+
 # 0.4.1 [2018.05.02]
 * Add a `Num Nat` instance.
 * Implement `signum` in the `PNum`/`SNum` instances for `Nat`.
