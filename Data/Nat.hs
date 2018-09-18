@@ -4,6 +4,9 @@
   InstanceSigs, TypeOperators, PolyKinds, StandaloneDeriving,
   FlexibleContexts, AllowAmbiguousTypes, CPP, OverloadedStrings,
   EmptyCase #-}
+#if __GLASGOW_HASKELL__ >= 806
+{-# LANGUAGE QuantifiedConstraints #-}
+#endif
 
 module Data.Nat (
     Nat(..)
