@@ -3,7 +3,7 @@
   FlexibleInstances, GADTs, TypeFamilies, TemplateHaskell,
   InstanceSigs, TypeOperators, PolyKinds, StandaloneDeriving,
   FlexibleContexts, AllowAmbiguousTypes, CPP, OverloadedStrings,
-  EmptyCase #-}
+  EmptyCase, TypeApplications #-}
 #if __GLASGOW_HASKELL__ >= 806
 {-# LANGUAGE QuantifiedConstraints #-}
 #endif
@@ -21,8 +21,13 @@ module Data.Nat (
   , natAbs
   , natSignum
   , someNatVal
+#if MIN_VERSION_singletons(2,6,0)
+  , SNat(..)
+  , Data.Singletons.Prelude.Sing
+#else
   , SNat
   , Data.Singletons.Prelude.Sing(SS, SZ)
+#endif
   , Data.Singletons.Prelude.PNum
   , Data.Singletons.Prelude.SNum
   , SSym0(..)
