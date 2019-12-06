@@ -7,6 +7,9 @@
 #if __GLASGOW_HASKELL__ >= 806
 {-# LANGUAGE QuantifiedConstraints #-}
 #endif
+#if __GLASGOW_HASKELL__ >= 810
+{-# LANGUAGE StandaloneKindSignatures #-}
+#endif
 
 module Data.Nat (
     Nat(..)

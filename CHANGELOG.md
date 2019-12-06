@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Allow `singletons-2.7`.
+
 # 0.4.3 [2019.08.27]
 * Allow `singletons-2.6`.
 
