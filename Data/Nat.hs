@@ -58,9 +58,9 @@ $(singletons [d|
   natMul (S a) b = natPlus b (natMul a b)
 
   natMinus :: Nat -> Nat -> Nat
-  natMinus Z     _     = Z
-  natMinus (S a) (S b) = natMinus a b
-  natMinus a     Z     = a
+  natMinus Z       _     = Z
+  natMinus (S a)   (S b) = natMinus a b
+  natMinus a@(S _) Z     = a
 
   natAbs :: Nat -> Nat
   natAbs n = n

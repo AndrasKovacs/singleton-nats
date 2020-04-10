@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Remove the use of overlapping patterns in `NatMinus`.
+
 # 0.4.4 [2020.03.25]
 * Allow `singletons-2.7`.
 
