@@ -1,4 +1,4 @@
-# next [????.??.??]
+# 0.4.5 [2020.04.11]
 * Remove the use of overlapping patterns in `NatMinus`.
 
 # 0.4.4 [2020.03.25]
