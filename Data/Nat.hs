@@ -26,13 +26,13 @@ module Data.Nat (
   , someNatVal
 #if MIN_VERSION_singletons(2,6,0)
   , SNat(..)
-  , Data.Singletons.Prelude.Sing
+  , PreludeSingletons.Sing
 #else
   , SNat
-  , Data.Singletons.Prelude.Sing(SS, SZ)
+  , PreludeSingletons.Sing(SS, SZ)
 #endif
-  , Data.Singletons.Prelude.PNum
-  , Data.Singletons.Prelude.SNum
+  , PreludeSingletons.PNum
+  , PreludeSingletons.SNum
   , SSym0(..)
   , SSym1
   , ZSym0
@@ -42,9 +42,15 @@ module Data.Nat (
   , SLit
   , sLit) where
 
-import Data.Singletons.TH
-import Data.Singletons.Prelude
 import qualified GHC.TypeLits as Lit
+
+#if MIN_VERSION_singletons(3,0,0)
+import Data.Singletons.Base.TH
+import Prelude.Singletons as PreludeSingletons
+#else
+import Data.Singletons.Prelude as PreludeSingletons
+import Data.Singletons.TH
+#endif
 
 $(singletons [d|
   data Nat = Z | S Nat deriving (Eq, Show, Ord)

@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Allow building with `singletons-base`.
+
 # 0.4.5 [2020.04.11]
 * Remove the use of overlapping patterns in `NatMinus`.
 
