@@ -1,4 +1,4 @@
-# next [????.??.??]
+# 0.4.6 [2021.03.12]
 * Allow building with `singletons-base`.
 
 # 0.4.5 [2020.04.11]
