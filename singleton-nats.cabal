@@ -34,7 +34,7 @@ library
   if flag(singletons-3-0)
     build-depends:
       singletons      >= 3.0 && < 3.1,
-      singletons-base >= 3.0 && < 3.2
+      singletons-base >= 3.0 && < 3.3
   else
     build-depends:
       singletons >= 2.2 && < 2.8
