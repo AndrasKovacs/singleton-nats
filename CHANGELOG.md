@@ -1,3 +1,6 @@
+# next [????.??.??]
+* Allow building with `singletons-base-3.3`.
+
 # 0.4.6 [2021.03.12]
 * Allow building with `singletons-base`.
 

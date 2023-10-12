@@ -11,6 +11,10 @@
 {-# LANGUAGE StandaloneKindSignatures #-}
 #endif
 
+#ifndef MIN_VERSION_singletons_base
+# define MIN_VERSION_singletons_base(x,y,z) 0
+#endif
+
 module Data.Nat (
     Nat(..)
   , NatPlus
@@ -91,11 +95,13 @@ $(singletons [d|
 deriving instance Show (SNat n)
 #endif
 
+#if !(MIN_VERSION_singletons_base(3,3,0))
 instance Eq (SNat n) where
   (==) _ _ = True
 
 instance Ord (SNat n) where
   compare _ _ = EQ
+#endif
 
 {-| Converts a runtime 'Integer' to an existentially wrapped 'Nat'. Returns 'Nothing' if
 the argument is negative -}
